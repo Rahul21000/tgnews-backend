@@ -1,0 +1,13 @@
+package com.tgnews.tgnews_api;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class TgnewsApiApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(TgnewsApiApplication.class, args);
+	}
+
+}
