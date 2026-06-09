@@ -1,16 +1,20 @@
 package com.tgnews.tgnews_api.controller;
 
+import com.tgnews.tgnews_api.dto.ArticleDto;
 import com.tgnews.tgnews_api.dto.ArticleResponseDto;
-import com.tgnews.tgnews_api.entity.Article;
 import com.tgnews.tgnews_api.service.ArticleService;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
 @RestController
-@RequestMapping("/articles")
+@RequestMapping("api/articles")
 public class ArticleController {
+   @Autowired
     private final ArticleService articleService;
 
     public ArticleController(ArticleService articleService) {
@@ -18,34 +22,30 @@ public class ArticleController {
     }
 
     // CREATE
-    @PostMapping
-    public ArticleResponseDto createArticle(@RequestBody Article article) {
-        return articleService.createArticle(article);
+    @PostMapping("/create")
+    public ResponseEntity<ArticleResponseDto> createArticle(@Valid @RequestBody ArticleDto articleDto) {
+        return articleService.handleCreateArticle(articleDto);
     }
 
-    // GET ALL
-    @GetMapping
-    public List<ArticleResponseDto> getAllArticles() {
-        return articleService.getAllArticles();
-    }
-
-    // GET BY ID
     @GetMapping("/{id}")
-    public ArticleResponseDto getArticleById(@PathVariable Long id) {
-        return articleService.getArticleById(id);
+    public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable Long id) {
+        return articleService.handleGetArticleById(id);
     }
 
-    // UPDATE
+    @GetMapping
+    public ResponseEntity<List<ArticleResponseDto>> getAllArticles() {
+        return articleService.handleGetAllArticle();
+    }
+
     @PutMapping("/{id}")
-    public ArticleResponseDto updateArticle(@PathVariable Long id,
-                                            @RequestBody Article article) {
-        return articleService.updateArticle(id, article);
+    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long id,
+                                           @Valid @RequestBody ArticleDto articleDto) {
+        return articleService.handleUpdateArticle(id, articleDto);
     }
 
-    // DELETE
     @DeleteMapping("/{id}")
-    public String deleteArticle(@PathVariable Long id) {
-        return articleService.deleteArticle(id);
+    public ResponseEntity<String> deleteArticle(@PathVariable Long id) {
+        return articleService.handleDeleteArticle(id);
     }
 
 }
