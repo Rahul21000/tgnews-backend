@@ -1,7 +1,6 @@
 package com.tgnews.tgnews_api.service;
 
 import com.tgnews.tgnews_api.dto.PostDto;
-import com.tgnews.tgnews_api.dto.PostResponseDto;
 import com.tgnews.tgnews_api.dto.ResponseDto;
 import com.tgnews.tgnews_api.entity.Post;
 import com.tgnews.tgnews_api.exception.PostAlreadyExistException;
@@ -16,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -35,49 +33,45 @@ public class PostServiceImpl implements PostService {
     @Override
     public ResponseEntity<ResponseDto> handleCreatePost(PostDto postDto) throws PostAlreadyExistException {
         if(postRepository.existsByTitle(postDto.getTitle())){
-            throw new PostAlreadyExistException("Article already exists with title: " + postDto.getTitle());
+            throw new PostAlreadyExistException("Post already exists with title: " + postDto.getTitle());
         }
         Post post = PostMapper.mapDtoToEntity(postDto);
         String imageUrl = imageUploadUtil.uploadImage(postDto.getImage());
         post.setImageUrl(imageUrl);
         Post savedPost = postRepository.save(post);
-        return responseUtils.handleResponseInPayload(savedPost,"Article created successfully",HttpStatus.CREATED.value(),HttpStatus.CREATED);
+        return responseUtils.handleResponseInPayload(savedPost,"Post created successfully",HttpStatus.CREATED.value(),HttpStatus.CREATED);
     }
 
     @Override
     public ResponseEntity<ResponseDto> handleGetPostById(Long id) throws PostNotFoundException {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException("Article not found id: " + id));
-        return responseUtils.handleResponseInPayload(post,"Article fetch successfully",200,HttpStatus.OK);
+                .orElseThrow(() -> new PostNotFoundException("Post not found id: " + id));
+        return responseUtils.handleResponseInPayload(post,"Post fetch successfully",200,HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<ResponseDto> handleGetAllPosts() throws PostNotFoundException {
-        List<PostResponseDto> articles = postRepository.findAll()
-                .stream()
-                .map(PostMapper::mapEntityToDto)
-                .collect(Collectors.toList());
-
-        return responseUtils.handleResponseInPayload(articles,"Articles fetched successfully",200,HttpStatus.OK);
+        List<Post> articles = postRepository.findAll();
+        return responseUtils.handleResponseInPayload(articles,"Posts fetched successfully",200,HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<ResponseDto> handleUpdatePost(Long id, PostDto postDto) throws PostNotFoundException {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException("Article not found id " + id));
+                .orElseThrow(() -> new PostNotFoundException("Post not found id " + id));
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post.setAuthor(postDto.getAuthor());
         Post savedPost = postRepository.save(post);
-        return responseUtils.handleResponseInPayload(savedPost,"Article updated successfully",200,HttpStatus.OK);
+        return responseUtils.handleResponseInPayload(savedPost,"Post updated successfully",200,HttpStatus.OK);
     }
 
     @Override
     public ResponseEntity<ResponseDto> handleDeletePost(Long id) throws PostNotFoundException {
         Post post = postRepository.findById(id)
-                .orElseThrow(() -> new PostNotFoundException("Article not found"));
+                .orElseThrow(() -> new PostNotFoundException("Post not found"));
 
         postRepository.delete(post);
-        return responseUtils.handleResponseInPayload(null,"Article deleted successfully",400,HttpStatus.NO_CONTENT);
+        return responseUtils.handleResponseInPayload(null,"Post deleted successfully",400,HttpStatus.NO_CONTENT);
     }
 }
