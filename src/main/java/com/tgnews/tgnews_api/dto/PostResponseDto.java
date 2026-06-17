@@ -3,7 +3,7 @@ import lombok.Data;
 
 
 @Data
-public class ArticleResponseDto {
+public class PostResponseDto {
         private Long id;
         private String title;
         private String content;

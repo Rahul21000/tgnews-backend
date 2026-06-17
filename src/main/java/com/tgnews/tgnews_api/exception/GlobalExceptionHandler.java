@@ -35,8 +35,8 @@ public class GlobalExceptionHandler {
         }
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(ArticleAlreadyExistException.class)
-    public ResponseEntity<ResponseDto> handleArticleAlreadyExistException(ArticleAlreadyExistException e) {
+    @ExceptionHandler(PostAlreadyExistException.class)
+    public ResponseEntity<ResponseDto> handleArticleAlreadyExistException(PostAlreadyExistException e) {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage(e.getMessage());
         responseDto.setStatusCode(HttpStatus.CONFLICT.value());
@@ -44,8 +44,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseDto, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(ArticleNotFoundException.class)
-    public ResponseEntity<ResponseDto> handleArticleNotFoundException(ArticleNotFoundException e) {
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<ResponseDto> handleArticleNotFoundException(PostNotFoundException e) {
         ResponseDto responseDto = new ResponseDto();
         responseDto.setMessage(e.getMessage());
         responseDto.setStatusCode(HttpStatus.NOT_FOUND.value());
